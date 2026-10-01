@@ -23,7 +23,7 @@ const authenticatedUser = (username,password)=>{
       user.username === username &&
       user.password === password
   );
-}
+});
 
 //only registered users can login
 regd_users.post("/login", (req,res) => {
@@ -53,9 +53,10 @@ regd_users.post("/login", (req,res) => {
 
 });
 
-// Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  
+    let book = books[req.params.isbn];
+    let review = req.query.review;
+    book.reviews.push(review);
 });
 
 module.exports.authenticated = regd_users;
