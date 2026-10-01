@@ -3,7 +3,7 @@ let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
-
+let doesExist = require("./auth_users.js").doesExist;
 
 public_users.post("/register", (req,res) => {
   const username=req.body.username;
@@ -32,18 +32,27 @@ public_users.get('/isbn/:isbn',function (req, res) {
   
 
 public_users.get('/author/:author',function (req, res) {
-   let book = books[req.params.author]
-    res.send(JSON.stringify(book));
+   const author = req.params.author;
+   const matchingBooks = Object.values(books).filter(
+    book => book.author === author
+  );
+  res.send(JSON.stringify(matchingBooks));
 });
 
 
 public_users.get('/title/:title',function (req, res) {
-   let book = books[req.params.title]
-    res.send(JSON.stringify(book));
+   const title = req.params.title;
+   const matchingBooks = Object.values(books).filter(
+    book => book.title === title
+  );
+  res.send(JSON.stringify(matchingBooks));
 });
 
 public_users.get('/review/:isbn',function (req, res) {
   let book = books[req.params.isbn]
+  if (!book) {
+    return res.status(404).json({ message: "Book not found" });
+  }
   res.send(JSON.stringify(book.reviews));
 });
 
